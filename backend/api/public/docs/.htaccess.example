@@ -1,0 +1,7 @@
+AuthType Basic
+AuthName "Amsal API Docs"
+AuthUserFile /absolute/path/to/.htpasswd
+Require valid-user
+
+# Optional IP restriction
+# Require ip 127.0.0.1 192.168.1.0/24

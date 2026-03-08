@@ -1,0 +1,2294 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Amsal ERP API",
+        "description": "Backend API for authentication, production settings, production batches, and leftover-aware costing.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost/dashboard/amsal-inventory/backend/api/public/api/v1",
+            "description": "Primary API server"
+        }
+    ],
+    "paths": {
+        "/dashboard/overview": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Return top-level KPI cards across production, supply, distribution, sales, and stock",
+                "operationId": "8f47215b53e7bb249d6820a1e475ecf0",
+                "parameters": [
+                    {
+                        "name": "date_from",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2026-03-01"
+                        }
+                    },
+                    {
+                        "name": "date_to",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2026-03-31"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dashboard overview returned"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/dashboard/trends": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Return trend series for production, supply, distribution, and retail over the last N days",
+                "operationId": "eef398ff7cbcae7076b4d9610963c8c6",
+                "parameters": [
+                    {
+                        "name": "days",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "example": 30
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dashboard trends returned"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/dashboard/alerts": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Return low-stock alerts, outstanding balances, and finished-goods warning data",
+                "operationId": "21bed81c80a8aa8a4ac2cfe492289aad",
+                "parameters": [
+                    {
+                        "name": "stock_threshold",
+                        "in": "query",
+                        "schema": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 20
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dashboard alerts returned"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/dashboard/activity": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Return recent activity feed from supply, production, distribution, and sales",
+                "operationId": "16e8b2aa9b1b4f99a48c03e4bc86b7c0",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "example": 20
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dashboard activity returned"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/distributors": {
+            "get": {
+                "tags": [
+                    "Distribution"
+                ],
+                "summary": "List distributors",
+                "operationId": "70eb66330e15510c2bd43bca14edc46c",
+                "responses": {
+                    "200": {
+                        "description": "Distributors returned"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Distribution"
+                ],
+                "summary": "Create a distributor",
+                "operationId": "115e2f0a43b8c92b91163d8e9ee28c9a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DistributorRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Distributor created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/distributors/{id}": {
+            "get": {
+                "tags": [
+                    "Distribution"
+                ],
+                "summary": "Fetch one distributor",
+                "operationId": "931dd9f5c3ed1d6eb5af4985f8056ea6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Distributor returned"
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Distribution"
+                ],
+                "summary": "Delete a distributor",
+                "operationId": "33cdc6da6cff87ad6acc6c8c4c6c9128",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Distributor deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Distribution"
+                ],
+                "summary": "Update a distributor",
+                "operationId": "d46050620c67684255ff5a40abdd00a5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DistributorRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Distributor updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/distribution/orders": {
+            "get": {
+                "tags": [
+                    "Distribution"
+                ],
+                "summary": "List distributor orders",
+                "operationId": "698714cb0608e7f643aa5e3abcc3a045",
+                "parameters": [
+                    {
+                        "name": "distributor_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "example": "confirmed"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Distributor orders returned"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Distribution"
+                ],
+                "summary": "Create a distributor order and optionally collect an initial payment",
+                "operationId": "5d501e098a1a88c705f472f0db9970ef",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DistributionOrderRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Distributor order created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/distribution/orders/{id}": {
+            "get": {
+                "tags": [
+                    "Distribution"
+                ],
+                "summary": "Fetch one distributor order with payments",
+                "operationId": "03c58e4c7e4859a39bd8132c07d192d9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Distributor order returned"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Distribution"
+                ],
+                "summary": "Delete a distributor order",
+                "operationId": "34d5603580f9b642545ed87006e23847",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Distributor order deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Distribution"
+                ],
+                "summary": "Update a distributor order",
+                "operationId": "9827d81331af179dd4ddbc288766216b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DistributionOrderRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Distributor order updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/distribution/orders/{id}/payments": {
+            "post": {
+                "tags": [
+                    "Distribution"
+                ],
+                "summary": "Add a payment to a distributor order",
+                "operationId": "391f05fb4a91f765db63f583e3d263df",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PaymentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Payment created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/distribution/analytics": {
+            "get": {
+                "tags": [
+                    "Distribution"
+                ],
+                "summary": "Distributor sales and outstanding balance summary",
+                "operationId": "c98cd75d910d9e43b40116308459c559",
+                "responses": {
+                    "200": {
+                        "description": "Distribution analytics returned"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/sales/stock": {
+            "get": {
+                "tags": [
+                    "Sales"
+                ],
+                "summary": "Show finished bottle stock available for distribution and retail sale",
+                "operationId": "0428b7d4ebf6dbba2e356f69749e1858",
+                "responses": {
+                    "200": {
+                        "description": "Finished goods stock returned"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/sales/retail": {
+            "get": {
+                "tags": [
+                    "Sales"
+                ],
+                "summary": "List retail sales",
+                "operationId": "5a5072103e1ec394a81d6dffcdc36996",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "example": "confirmed"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retail sales returned"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Sales"
+                ],
+                "summary": "Create a retail sale and optionally collect an initial payment",
+                "operationId": "9e7275ece2c09d0f3c7f44bffbc2cecb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RetailSaleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Retail sale created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/sales/retail/{id}": {
+            "get": {
+                "tags": [
+                    "Sales"
+                ],
+                "summary": "Fetch one retail sale with payments",
+                "operationId": "75a43e356251c9f69b9a32c64cc7aa41",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retail sale returned"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Sales"
+                ],
+                "summary": "Delete a retail sale",
+                "operationId": "15ab882956ca43653e0756298e93259e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retail sale deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Sales"
+                ],
+                "summary": "Update a retail sale",
+                "operationId": "e26a7f9c7aac9909498890b8526644b9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RetailSaleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retail sale updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/sales/retail/{id}/payments": {
+            "post": {
+                "tags": [
+                    "Sales"
+                ],
+                "summary": "Add a payment to a retail sale",
+                "operationId": "fb508536f4bb889cb319010f9960f82f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PaymentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Retail payment created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/sales/analytics": {
+            "get": {
+                "tags": [
+                    "Sales"
+                ],
+                "summary": "Retail sales summary",
+                "operationId": "7d340c79d87cac4cf6edc15d8583700a",
+                "responses": {
+                    "200": {
+                        "description": "Retail sales analytics returned"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Create an admin or staff account for development and seeding workflows",
+                "operationId": "ff8969820503a7823bfbf6e2ab14d1ae",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "full_name",
+                                    "email",
+                                    "password",
+                                    "role"
+                                ],
+                                "properties": {
+                                    "full_name": {
+                                        "type": "string",
+                                        "example": "Amsal Admin"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "admin@amsal.test"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "08030000000"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "SecurePass123"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "enum": [
+                                            "admin",
+                                            "staff"
+                                        ],
+                                        "example": "admin"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Account created"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Authenticate a user and issue a bearer token",
+                "operationId": "145f5e4e12c08cdbe7731cc670d46830",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Authenticated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login successful."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string"
+                                                },
+                                                "token_type": {
+                                                    "type": "string",
+                                                    "example": "Bearer"
+                                                },
+                                                "expires_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/production/settings": {
+            "get": {
+                "tags": [
+                    "Production Settings"
+                ],
+                "summary": "List production parameters",
+                "operationId": "859b31ebb34bfb9b62a645a66ec7c799",
+                "parameters": [
+                    {
+                        "name": "parameter_kind",
+                        "in": "query",
+                        "description": "Filter by parameter category",
+                        "schema": {
+                            "type": "string",
+                            "example": "input"
+                        }
+                    },
+                    {
+                        "name": "is_active",
+                        "in": "query",
+                        "description": "Optional active-state filter for future extension",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Settings list returned"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Production Settings"
+                ],
+                "summary": "Create a production parameter",
+                "operationId": "8f378eec2dfc7ab56937895ca5aea055",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductionSettingRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Setting created"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/production/settings/{id}": {
+            "get": {
+                "tags": [
+                    "Production Settings"
+                ],
+                "summary": "Fetch one production parameter",
+                "operationId": "32a173008d31ff76655fd6dc483a158a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Setting returned"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Production Settings"
+                ],
+                "summary": "Delete a production parameter",
+                "operationId": "31eacfa2013c55872042e77251747ca9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Setting deleted"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Production Settings"
+                ],
+                "summary": "Update a production parameter",
+                "operationId": "750eb3bfd8205a32cd564d653a79fd24",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductionSettingRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Setting updated"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/production/batches": {
+            "get": {
+                "tags": [
+                    "Production Batches"
+                ],
+                "summary": "List production batches",
+                "operationId": "1380eeb758762453f0a5c08329c16f24",
+                "parameters": [
+                    {
+                        "name": "date_from",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2026-03-01"
+                        }
+                    },
+                    {
+                        "name": "date_to",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2026-03-31"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "example": "completed"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Batch list returned"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Production Batches"
+                ],
+                "summary": "Create a production batch with leftover-aware costing",
+                "operationId": "c96850666876b6a22e84ca6ecfc21638",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductionBatchRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Batch created"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/production/batches/{id}": {
+            "get": {
+                "tags": [
+                    "Production Batches"
+                ],
+                "summary": "Fetch one production batch with computed line items",
+                "operationId": "1a2cb5bbc22f6ab0ba8dc0f05a0de247",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Batch returned"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Production Batches"
+                ],
+                "summary": "Delete a production batch and rebuild dependent leftovers",
+                "operationId": "e6d4297a8f801a831d350889e0aea189",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Batch deleted"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Production Batches"
+                ],
+                "summary": "Update an existing production batch and rebuild dependent leftovers",
+                "operationId": "c38a74933613023b8e1010c206dd6d5c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductionBatchRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Batch updated"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/production/leftovers": {
+            "get": {
+                "tags": [
+                    "Production Batches"
+                ],
+                "summary": "List active leftover layers that will feed the next production run",
+                "operationId": "53ec74c186c87c9cd18ff6d709f38adb",
+                "responses": {
+                    "200": {
+                        "description": "Active leftovers returned"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/supply/receipts": {
+            "get": {
+                "tags": [
+                    "Supply"
+                ],
+                "summary": "List supply receipts",
+                "operationId": "8c912b2f9d24128e9af12f88b152a367",
+                "parameters": [
+                    {
+                        "name": "date_from",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2026-03-01"
+                        }
+                    },
+                    {
+                        "name": "date_to",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2026-03-31"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "example": "received"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Supply receipt list returned"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Supply"
+                ],
+                "summary": "Create a supply receipt and add materials into store stock",
+                "operationId": "f9c69a7527b17b510ab7edd3817671ab",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SupplyReceiptRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Supply receipt created"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/supply/receipts/{id}": {
+            "get": {
+                "tags": [
+                    "Supply"
+                ],
+                "summary": "Fetch one supply receipt with its stock items",
+                "operationId": "484ad3ee1b2c87f1dec7c3a8f95d3abf",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Supply receipt returned"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Supply"
+                ],
+                "summary": "Delete a supply receipt and rebuild stock balances",
+                "operationId": "f2afaa4350dec9a1271a5497ca57eafb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Supply receipt deleted"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Supply"
+                ],
+                "summary": "Update a supply receipt and rebuild dependent stock balances",
+                "operationId": "206f6a0b191850ebf814c9a745d52c8e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SupplyReceiptRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Supply receipt updated"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/supply/stock-balances": {
+            "get": {
+                "tags": [
+                    "Supply"
+                ],
+                "summary": "List current stock balances in store by production parameter",
+                "operationId": "649c356f090e539d657315ba9dafe0cf",
+                "responses": {
+                    "200": {
+                        "description": "Stock balances returned"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "DistributorRequest": {
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Main Street Distributor"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "08030000000"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "distributor@example.com"
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "Kano depot"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "active"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "example": "Pays outstanding balances weekly"
+                    }
+                },
+                "type": "object"
+            },
+            "DistributionOrderRequest": {
+                "required": [
+                    "order_number",
+                    "distributor_id",
+                    "order_date",
+                    "bottles_issued",
+                    "unit_price"
+                ],
+                "properties": {
+                    "order_number": {
+                        "type": "string",
+                        "example": "DIST-2026-0001"
+                    },
+                    "distributor_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "order_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-03-07"
+                    },
+                    "bottles_issued": {
+                        "type": "integer",
+                        "example": 600
+                    },
+                    "unit_price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 1000
+                    },
+                    "payment_type": {
+                        "type": "string",
+                        "example": "partial"
+                    },
+                    "initial_payment": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 420000
+                    },
+                    "payment_method": {
+                        "type": "string",
+                        "example": "transfer"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "confirmed"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "example": "Distributor will balance on next restock"
+                    }
+                },
+                "type": "object"
+            },
+            "RetailSaleRequest": {
+                "required": [
+                    "sale_number",
+                    "sale_date",
+                    "bottles_sold",
+                    "unit_price"
+                ],
+                "properties": {
+                    "sale_number": {
+                        "type": "string",
+                        "example": "SALE-2026-0001"
+                    },
+                    "sale_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-03-07"
+                    },
+                    "customer_name": {
+                        "type": "string",
+                        "example": "Walk-in customer"
+                    },
+                    "customer_phone": {
+                        "type": "string",
+                        "example": "08030000001"
+                    },
+                    "bottles_sold": {
+                        "type": "integer",
+                        "example": 24
+                    },
+                    "unit_price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 1200
+                    },
+                    "payment_type": {
+                        "type": "string",
+                        "example": "cash"
+                    },
+                    "initial_payment": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 28800
+                    },
+                    "payment_method": {
+                        "type": "string",
+                        "example": "cash"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "confirmed"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "example": "Immediate retail sale"
+                    }
+                },
+                "type": "object"
+            },
+            "PaymentRequest": {
+                "required": [
+                    "amount"
+                ],
+                "properties": {
+                    "payment_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-03-08"
+                    },
+                    "amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 180000
+                    },
+                    "payment_method": {
+                        "type": "string",
+                        "example": "transfer"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "example": "Part balance payment"
+                    }
+                },
+                "type": "object"
+            },
+            "ErrorResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Validation failed."
+                    },
+                    "errors": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "schema": "OpenApi",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "OpenApi": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "LoginRequest": {
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "admin@amsal.test"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "SecurePass123"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductionSettingRequest": {
+                "required": [
+                    "name",
+                    "parameter_kind",
+                    "quantity_unit"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Milk"
+                    },
+                    "code": {
+                        "type": "string",
+                        "example": "milk"
+                    },
+                    "parameter_kind": {
+                        "type": "string",
+                        "enum": [
+                            "input",
+                            "packaging",
+                            "config",
+                            "output"
+                        ],
+                        "example": "input"
+                    },
+                    "quantity_unit": {
+                        "type": "string",
+                        "example": "kg"
+                    },
+                    "unit_cost": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 850
+                    },
+                    "default_quantity": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 12
+                    },
+                    "notes": {
+                        "type": "string",
+                        "example": "Fresh cow milk cost per kg"
+                    },
+                    "sort_order": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object"
+            },
+            "ProductionBatchItemRequest": {
+                "required": [
+                    "parameter_id"
+                ],
+                "properties": {
+                    "parameter_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "new_quantity_added": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 12
+                    },
+                    "closing_leftover_quantity": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 1.5
+                    },
+                    "notes": {
+                        "type": "string",
+                        "example": "1.5kg milk remained after processing"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductionBatchRequest": {
+                "required": [
+                    "batch_number",
+                    "production_date",
+                    "batch_size_liters",
+                    "bottles_produced",
+                    "selling_price_per_bottle",
+                    "items"
+                ],
+                "properties": {
+                    "batch_number": {
+                        "type": "string",
+                        "example": "BATCH-2026-0001"
+                    },
+                    "production_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-03-07"
+                    },
+                    "batch_size_liters": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 50
+                    },
+                    "bottles_produced": {
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "selling_price_per_bottle": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 500
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "completed"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "example": "Morning fermented milk production"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProductionBatchItemRequest"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "SupplyReceiptItemRequest": {
+                "required": [
+                    "parameter_id",
+                    "quantity_received",
+                    "unit_cost"
+                ],
+                "properties": {
+                    "parameter_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "quantity_received": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 50
+                    },
+                    "unit_cost": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 1450
+                    },
+                    "notes": {
+                        "type": "string",
+                        "example": "One full bag supplied into store"
+                    }
+                },
+                "type": "object"
+            },
+            "SupplyReceiptRequest": {
+                "required": [
+                    "receipt_number",
+                    "supply_date",
+                    "items"
+                ],
+                "properties": {
+                    "receipt_number": {
+                        "type": "string",
+                        "example": "SUP-2026-0001"
+                    },
+                    "supply_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-03-07"
+                    },
+                    "supplier_name": {
+                        "type": "string",
+                        "example": "Amsal Raw Materials"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "received"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "example": "Morning store restock"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SupplyReceiptItemRequest"
+                        }
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "Opaque Token",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Dashboard",
+            "description": "Dashboard"
+        },
+        {
+            "name": "Distribution",
+            "description": "Distribution"
+        },
+        {
+            "name": "Sales",
+            "description": "Sales"
+        },
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Production Settings",
+            "description": "Production Settings"
+        },
+        {
+            "name": "Production Batches",
+            "description": "Production Batches"
+        },
+        {
+            "name": "Supply",
+            "description": "Supply"
+        }
+    ]
+}
